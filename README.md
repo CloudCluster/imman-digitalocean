@@ -23,6 +23,6 @@ java -jar imman-tools.jar -c TEST-CLUSTER -s3a S3AAA -s3s S3SSS -s3b BUCKET_NAME
 
 [Download imman-tools.jar here](https://github.com/CloudCluster/imman-tools/blob/master/src/bin/imman-tools.jar)
 
-Once you'll create ImMan Cluster, you should find Cluster JSON file: **/opt/ccio/clusters/TEST-CLUSTER.json** which will contain all information about the cluster. This file will be used for future cluster adjustments.
+Once you'll create ImMan Cluster, you should find Cluster JSON file: **/opt/ccio/clusters/TEST-CLUSTER.json** which will contain all information about the cluster. This file will be used for future cluster adjustments and [monitoring](https://github.com/CloudCluster/imman-monitor).
 
 More information on [Wiki](https://github.com/CloudCluster/imman-tools/wiki).
