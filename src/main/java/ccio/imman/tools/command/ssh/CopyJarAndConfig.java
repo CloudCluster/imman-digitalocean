@@ -1,17 +1,19 @@
-package ccio.imman.tools.ssh;
+package ccio.imman.tools.command.ssh;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import ccio.imman.tools.ImmanNode;
 import ccio.imman.tools.SshService;
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.command.CliCommand;
+import ccio.imman.tools.command.CliException;
+import ccio.imman.tools.command.CliParseException;
+import jline.console.ConsoleReader;
 
-public class CopyJar extends SshAction{
-	
+public class CopyJarAndConfig extends SshAction{
+
 	private static final String SERVICE_FILE = "#!/bin/bash\n" + 
 			"# description: CCIO ImMan Start Stop Restart\n" + 
 			"# processname: ccio-imman\n" + 
@@ -76,9 +78,8 @@ public class CopyJar extends SshAction{
 	
 	private static final String RUN_SCRIPT_TEMPLATE="#!/bin/sh\n"
 			+ "echo \"Starting CCIO ImMan\"\n"
-			+ "nohup java -server -Xmx600m -Xms600m -XX:MaxMetaspaceSize=60m -XX:+UseConcMarkSweepGC"
-			+ " -XX:CMSInitiatingOccupancyFraction=50 -XX:+HeapDumpOnOutOfMemoryError"
-			+ " -Dhazelcast.max.no.heartbeat.seconds=8"
+			+ "nohup java -server -Xmx400m -Xms400m -XX:+UseConcMarkSweepGC"
+			+ " -XX:+HeapDumpOnOutOfMemoryError"
 			+ " -jar /opt/imman-node.jar > /opt/logs/out.log 2>&1 &\n";
 	
 	private static final String STOP_SCRIPT_TEMPLATE="#!/bin/bash\n" + 
@@ -86,20 +87,33 @@ public class CopyJar extends SshAction{
 			"echo \"Stopping CCIO ImMan:\" $pid\n" + 
 			"kill $pid";
 	
-	private String fileLocation;
+	private String pathToJar;
 	
+	public CopyJarAndConfig() {
+		super("copy-jar", "pathToJar");
+	}
+
 	@Override
-	public void apply(ImmanCluster imageCluster){
+	public CliCommand parse(String[] cmdArgs, ConsoleReader console) throws CliParseException {
+		if(cmdArgs == null || cmdArgs.length!=2){
+			throw new CliParseException("requered arguments: pathToJar");
+		}
+		pathToJar = cmdArgs[1];
+		return this;
+	}
+
+	@Override
+	public boolean exec() throws CliException {
+		SshService sshService=getSshService(cluster);
 		
-		SshService sshService=getSshService(imageCluster);
-		
-		for(ImmanNode imageNode : imageCluster.getImageNodes()){
+		for(ImmanNode imageNode : cluster.getImageNodes()){
+			System.out.println("#################################################");
 			Session session=null;
 			try {
 				session = sshService.openNewSession(imageNode.getPublicIp());
 				if(session!=null){
-					System.out.println("Copying /opt/imman-node.jar to "+imageNode.getDropletName());
-					boolean res=sshService.copyFileToRemoteServer(fileLocation, "/opt/imman-node.jar", session);
+					System.out.println("Copying "+pathToJar+" to "+imageNode.getDropletName());
+					boolean res=sshService.copyFileToRemoteServer(pathToJar, "/opt/imman-node.jar", session);
 					if(!res){
 						System.out.println("ERROR: Cannot copy imman-node.jar to "+imageNode.getDropletName()+" || "+imageNode.getPublicIp());
 					}
@@ -162,35 +176,7 @@ public class CopyJar extends SshAction{
 				}
 			}
 		}
+		return true;
 	}
-	
-	public void withInput(Scanner keyboard, ImmanCluster imageCluster){
-		System.out.print("JAR location: ");
-		String location = keyboard.nextLine();
-		this.fileLocation = location;
-		
-		apply(imageCluster);
-	}
-	
 
-	public static void main(String[] args){
-		String clusterName = null;
-		if(args.length > 0){
-			clusterName = args[0];
-		}
-		
-		try (Scanner keyboard = new Scanner(System.in)){
-			if(clusterName == null){
-				System.out.print("Cluster Name: ");
-				clusterName = keyboard.nextLine();
-			}
-			
-			ImmanCluster cluster = ImmanCluster.read(clusterName);
-			
-			CopyJar copyJar = new CopyJar();
-			copyJar.withInput(keyboard, cluster);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
 }

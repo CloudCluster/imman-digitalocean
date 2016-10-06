@@ -2,7 +2,7 @@ package ccio.imman.tools.cloudflair;
 
 import java.util.Scanner;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
+import ccio.imman.tools.ImmanCluster;
 
 public abstract class CloudFlareAction {
 	

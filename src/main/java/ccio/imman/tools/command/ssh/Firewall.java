@@ -1,15 +1,18 @@
-package ccio.imman.tools.ssh;
+package ccio.imman.tools.command.ssh;
 
 import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
 
+import ccio.imman.tools.ImmanNode;
 import ccio.imman.tools.SshService;
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.command.CliCommand;
+import ccio.imman.tools.command.CliException;
+import ccio.imman.tools.command.CliParseException;
+import jline.console.ConsoleReader;
 
 public class Firewall extends SshAction{
-	
+
 	private static final String SET_IPTABLES_SH_BEGIN="#!/bin/sh\n" + 
 			"# Flushing all rules\n" + 
 			"/sbin/iptables -F\n" + 
@@ -48,11 +51,20 @@ public class Firewall extends SshAction{
 			"\n" + 
 			"/sbin/service iptables save\n";
 	
-	
+	public Firewall() {
+		super("firewall", "");
+	}
+
 	@Override
-	public void apply(ImmanCluster immanCluster){
+	public CliCommand parse(String[] cmdArgs, ConsoleReader console) throws CliParseException {
+		return this;
+	}
+
+	@Override
+	public boolean exec() throws CliException {
+		System.out.println("Applying firewall");
 		StringBuilder bodyBuilder=new StringBuilder(SET_IPTABLES_SH_BEGIN);
-		for(ImmanNode imageNode : immanCluster.getImageNodes()){
+		for(ImmanNode imageNode : cluster.getImageNodes()){
 			bodyBuilder.append(SET_IPTABLES_SH_NODE.replace("##IP##", imageNode.getPublicIp()));
 			bodyBuilder.append(SET_IPTABLES_SH_NODE.replace("##IP##", imageNode.getPrivateIp()));
 		}
@@ -60,9 +72,9 @@ public class Firewall extends SshAction{
 		
 		String body=bodyBuilder.toString();
 
-		SshService sshService=getSshService(immanCluster);
+		SshService sshService=getSshService(cluster);
 		
-		for(ImmanNode imageNode : immanCluster.getImageNodes()){
+		for(ImmanNode imageNode : cluster.getImageNodes()){
 			System.out.println("Applying Firewall to "+imageNode.getDropletName()+" Droplet");
 			try {
 				copyToFileAndExecute(sshService, imageNode.getPublicIp(), "/opt/scripts/Firewall.sh", body);
@@ -70,9 +82,6 @@ public class Firewall extends SshAction{
 				System.out.println("Problem appling firewall on "+imageNode.getDropletName()+" Droplet: "+e.getMessage());
 			}
 		}
-	}
-
-	public static void main(String... args){
-		main(new Firewall(), args);
+		return true;
 	}
 }

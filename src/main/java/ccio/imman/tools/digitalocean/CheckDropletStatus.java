@@ -8,8 +8,8 @@ import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 import com.myjeeva.digitalocean.pojo.Droplet;
 import com.myjeeva.digitalocean.pojo.Network;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.ImmanCluster;
+import ccio.imman.tools.ImmanNode;
 
 public class CheckDropletStatus extends DoAction<Boolean>{
 	

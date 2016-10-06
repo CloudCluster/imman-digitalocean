@@ -1,15 +1,18 @@
-package ccio.imman.tools.ssh;
+package ccio.imman.tools.command.ssh;
 
 import java.io.IOException;
 
 import com.jcraft.jsch.JSchException;
 
+import ccio.imman.tools.ImmanNode;
 import ccio.imman.tools.SshService;
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.command.CliCommand;
+import ccio.imman.tools.command.CliException;
+import ccio.imman.tools.command.CliParseException;
+import jline.console.ConsoleReader;
 
-public class SetupNode extends SshAction{
-	
+public class SetupNodeCommand extends SshAction{
+
 	private static final String SCRIPT = "#!/bin/sh\n" +
 			//IP Tables
 			"yum -y install iptables-services\n" +
@@ -44,11 +47,21 @@ public class SetupNode extends SshAction{
 			"mkdir /opt/logs"
 			;
 	
+	public SetupNodeCommand() {
+		super("setup-node", "");
+	}
+
 	@Override
-	public void apply(ImmanCluster cluster){
+	public CliCommand parse(String[] cmdArgs, ConsoleReader reader) throws CliParseException {
+		return this;
+	}
+
+	@Override
+	public boolean exec() throws CliException {
 		SshService sshService=getSshService(cluster);
 		
 		for(ImmanNode imageNode : cluster.getImageNodes()){
+			System.out.println("#################################################");
 			System.out.println("Setting Up "+imageNode.getDropletName()+" Droplet");
 			try {
 				copyToFileAndExecute(sshService, imageNode.getPublicIp(), "/opt/scripts/NodeSetup.sh", SCRIPT);
@@ -56,12 +69,6 @@ public class SetupNode extends SshAction{
 				e.printStackTrace();
 			}
 		}
-		
-		new Firewall().apply(cluster);
+		return true;
 	}
-
-	public static void main(String... args) {
-		main(new SetupNode(), args);
-	}
-
 }

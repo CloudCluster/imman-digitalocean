@@ -10,8 +10,8 @@ import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 import com.myjeeva.digitalocean.pojo.Region;
 import com.myjeeva.digitalocean.pojo.Volume;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.ImmanCluster;
+import ccio.imman.tools.ImmanNode;
 
 public class CreateVolumes extends DoAction<Volume[]>{
 	

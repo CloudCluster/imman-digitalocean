@@ -6,7 +6,7 @@ import com.myjeeva.digitalocean.DigitalOcean;
 import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
+import ccio.imman.tools.ImmanCluster;
 
 public class DeleteSshKey extends DoAction<Void>{
 	

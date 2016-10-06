@@ -1,4 +1,4 @@
-package ccio.imman.tools.digitalocean.model;
+package ccio.imman.tools;
 
 public class ImmanNode {
 

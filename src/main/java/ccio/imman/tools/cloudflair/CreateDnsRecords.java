@@ -6,8 +6,8 @@ import org.json.JSONException;
 
 import com.mashape.unirest.http.exceptions.UnirestException;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.ImmanCluster;
+import ccio.imman.tools.ImmanNode;
 
 public class CreateDnsRecords extends CloudFlareAction{
 

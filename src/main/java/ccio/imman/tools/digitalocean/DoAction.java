@@ -6,7 +6,7 @@ import java.util.Scanner;
 import com.myjeeva.digitalocean.DigitalOcean;
 import com.myjeeva.digitalocean.impl.DigitalOceanClient;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
+import ccio.imman.tools.ImmanCluster;
 
 public abstract class DoAction<T> {
 	

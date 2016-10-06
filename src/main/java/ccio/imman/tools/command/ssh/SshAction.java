@@ -1,38 +1,20 @@
-package ccio.imman.tools.ssh;
+package ccio.imman.tools.command.ssh;
 
 import java.io.IOException;
-import java.util.Scanner;
 
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 
+import ccio.imman.tools.ImmanCluster;
 import ccio.imman.tools.SshService;
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
+import ccio.imman.tools.command.CliCommand;
 
-public abstract class SshAction {
+public abstract class SshAction extends CliCommand{
 
-	
-	public abstract void apply(ImmanCluster imageCluster);
-	
-	public static void main(SshAction sshAction, String... args){
-		String clusterName = null;
-		if(args.length > 0){
-			clusterName = args[0];
-		}
-		
-		try (Scanner keyboard = new Scanner(System.in)){
-			if(clusterName == null){
-				System.out.print("Cluster Name: ");
-				clusterName = keyboard.nextLine();
-			}
-			
-			ImmanCluster cluster = ImmanCluster.read(clusterName);
-			sshAction.apply(cluster);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+	public SshAction(String cmdStr, String optionStr) {
+		super(cmdStr, optionStr);
 	}
-	
+
 	protected SshService getSshService(ImmanCluster cluster){
 		SshService sshService=new SshService();
 		sshService.setDefaultUser("root");

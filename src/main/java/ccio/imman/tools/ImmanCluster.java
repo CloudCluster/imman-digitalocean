@@ -1,4 +1,4 @@
-package ccio.imman.tools.digitalocean.model;
+package ccio.imman.tools;
 
 import java.io.File;
 import java.io.IOException;
@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.RandomStringUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.io.Files;
 
@@ -22,8 +23,11 @@ public class ImmanCluster {
 	private String s3Secret;
 	private String s3Bucket;
 	private String secret;
+	private String doToken;
 	private String cfZone;
 	private String cfSubDomain;
+	private String cfToken;
+	private String cfEmail;
 	private Integer volumeSizeGigabytes;
 	
 	public String getClusterName() {
@@ -113,9 +117,27 @@ public class ImmanCluster {
 	public void setVolumeSizeGigabytes(Integer volumeSizeGigabytes) {
 		this.volumeSizeGigabytes = volumeSizeGigabytes;
 	}
+	public String getDoToken() {
+		return doToken;
+	}
+	public void setDoToken(String doToken) {
+		this.doToken = doToken;
+	}
+	public String getCfToken() {
+		return cfToken;
+	}
+	public void setCfToken(String cfToken) {
+		this.cfToken = cfToken;
+	}
+	public String getCfEmail() {
+		return cfEmail;
+	}
+	public void setCfEmail(String cfEmail) {
+		this.cfEmail = cfEmail;
+	}
 	
 	public static void save(ImmanCluster cluster) throws IOException{
-		String result = new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(cluster);
+		String result = toString(cluster);
 		File file = new File("/opt/ccio/clusters/"+cluster.getClusterName()+".json");
 		Files.createParentDirs(file);
 		Files.write(result.getBytes(), file);
@@ -128,5 +150,9 @@ public class ImmanCluster {
 	
 	public static ImmanCluster read(String clusterName) throws IOException{
 		return new ObjectMapper().readValue(new File("/opt/ccio/clusters/"+clusterName+".json"), ImmanCluster.class);
+	}
+	
+	public static String toString(ImmanCluster cluster) throws JsonProcessingException {
+		return new ObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(cluster);
 	}
 }

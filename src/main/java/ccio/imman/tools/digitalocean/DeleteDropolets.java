@@ -6,8 +6,8 @@ import com.myjeeva.digitalocean.DigitalOcean;
 import com.myjeeva.digitalocean.exception.DigitalOceanException;
 import com.myjeeva.digitalocean.exception.RequestUnsuccessfulException;
 
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
+import ccio.imman.tools.ImmanCluster;
+import ccio.imman.tools.ImmanNode;
 
 public class DeleteDropolets extends DoAction<Void> {
 	

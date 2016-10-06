@@ -21,9 +21,9 @@ import com.myjeeva.digitalocean.pojo.Region;
 import com.myjeeva.digitalocean.pojo.Size;
 import com.myjeeva.digitalocean.pojo.Sizes;
 
+import ccio.imman.tools.ImmanCluster;
+import ccio.imman.tools.ImmanNode;
 import ccio.imman.tools.digitalocean.model.DoSshKey;
-import ccio.imman.tools.digitalocean.model.ImmanCluster;
-import ccio.imman.tools.digitalocean.model.ImmanNode;
 
 public class CreateDroplets extends DoAction<Droplet[]> {
 	
