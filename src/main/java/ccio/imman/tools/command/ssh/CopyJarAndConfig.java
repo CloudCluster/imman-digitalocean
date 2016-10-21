@@ -57,7 +57,7 @@ public class CopyJarAndConfig extends SshAction{
 			"		<smtpHost>localhost</smtpHost>\n" + 
 			"		<from>no-reply@cloudcluster.io</from>\n" + 
 			"		<to>eugene@strokin.info</to>\n" + 
-			"		<subject>[CCIO Image] %logger{20} - %m</subject>\n" + 
+			"		<subject>[CCIO Image][####DROPLET_NAME####] %m</subject>\n" + 
 			"		<layout class=\"ch.qos.logback.classic.html.HTMLLayout\" />\n" + 
 			"		<filter class=\"ch.qos.logback.classic.filter.ThresholdFilter\">\n" + 
 			"			<level>ERROR</level>\n" + 
@@ -71,14 +71,15 @@ public class CopyJarAndConfig extends SshAction{
 			"	<root level=\"INFO\">\n" + 
 			"<!--		<appender-ref ref=\"STDOUT\" /> -->\n" + 
 			"		<appender-ref ref=\"FILE\" />\n" + 
-			"		<appender-ref ref=\"EMAIL\" />\n" + 
+			"<!--		<appender-ref ref=\"EMAIL\" /> -->\n" + 
 			"	</root>\n" + 
 			"\n" + 
 			"</included>";
 	
 	private static final String RUN_SCRIPT_TEMPLATE="#!/bin/sh\n"
 			+ "echo \"Starting CCIO ImMan\"\n"
-			+ "nohup java -server -Xmx400m -Xms400m -XX:+UseConcMarkSweepGC"
+			+ "ulimit -n 65535\n"
+			+ "nohup java -server -Xmx400m -Xms200m"
 			+ " -XX:+HeapDumpOnOutOfMemoryError"
 			+ " -jar /opt/imman-node.jar > /opt/logs/out.log 2>&1 &\n";
 	
@@ -119,7 +120,7 @@ public class CopyJarAndConfig extends SshAction{
 					}
 					
 					System.out.println("Copying /opt/ccio-imman-logback.xml to "+imageNode.getDropletName());
-					res=sshService.copyToRemoteServer(LOGBACK_FILE, "/opt/ccio-imman-logback.xml", session);
+					res=sshService.copyToRemoteServer(LOGBACK_FILE.replace("####DROPLET_NAME####", imageNode.getDropletName()), "/opt/ccio-imman-logback.xml", session);
 					if(!res){
 						System.out.println("ERROR: Cannot copy ccio-imman-logback.xml to "+imageNode.getDropletName()+" || "+imageNode.getPublicIp());
 					}
