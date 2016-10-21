@@ -93,6 +93,22 @@ public class CloudFlareService {
 		System.out.println(obj);
 		return obj.getBoolean("success");
 	}
+	
+	public boolean purgeFile(String cfZone, String fileUrl) throws UnirestException{
+		String zoneId = getZoneId(cfZone);
+		if(zoneId == null){
+			return false;
+		}
+		HttpResponse<JsonNode> result = Unirest.delete(API_URL+"/zones/"+cfZone+"/purge_cache")
+				.header("X-Auth-Email", cfEmail)
+				.header("X-Auth-Key", cfToken)
+				.header("Content-Type", "application/json")
+				.body("{\"files\":[\""+fileUrl+"\"]}'")
+				.asJson();
+		JSONObject obj = result.getBody().getObject();
+		System.out.println(obj);
+		return obj.getBoolean("success");
+	}
 
 	public void setCloudFlareEmail(String cloudFlareEmail){
 		this.cfEmail = cloudFlareEmail;

@@ -36,6 +36,7 @@ import ccio.imman.tools.command.digitalocean.DropletStop;
 import ccio.imman.tools.command.digitalocean.SetDigitalOcean;
 import ccio.imman.tools.command.ssh.CopyConfigFile;
 import ccio.imman.tools.command.ssh.CopyJarAndConfig;
+import ccio.imman.tools.command.ssh.DeleteCachedFile;
 import ccio.imman.tools.command.ssh.Firewall;
 import ccio.imman.tools.command.ssh.SetupNodeCommand;
 import jline.console.ConsoleReader;
@@ -80,6 +81,7 @@ public class Main {
         new DeleteVolumes().addToMap(CLI_COMMANDS);
         new DeleteCloudflareDns().addToMap(CLI_COMMANDS);
         new DeleteSshKey().addToMap(CLI_COMMANDS);
+        new DeleteCachedFile().addToMap(CLI_COMMANDS);
 
         // add all to COMMANDS
         for (Entry<String, CliCommand> entry : CLI_COMMANDS.entrySet()) {

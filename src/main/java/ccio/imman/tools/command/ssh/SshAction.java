@@ -55,4 +55,25 @@ public abstract class SshAction extends CliCommand{
 			}
 		}
 	}
+	
+	protected void execute(SshService sshService, String remoteHost, String command) throws JSchException, IOException{
+		Session session=null;
+		try {
+			session = sshService.openNewSession(remoteHost);
+			if(session!=null){
+				StringBuffer respMsg=new StringBuffer();
+				int resCode = sshService.execute(command, session, respMsg);
+				if(resCode!=0){
+					System.out.println("Cannot execute "+command+": "+resCode+" - "+respMsg);
+				}
+				System.out.println(remoteHost+" is completed with: "+respMsg);
+			}else{
+				System.out.println("Cannot get session for "+remoteHost);
+			}
+		}finally{
+			if(session!=null){
+				session.disconnect();
+			}
+		}
+	}
 }
