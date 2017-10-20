@@ -15,7 +15,8 @@ import jline.console.ConsoleReader;
 public class CopyConfigFile extends SshAction{
 
 	private static final String CONFIG_TEMPLATE= "files.space.reserved=1000000000\n"
-			+ "files.locations=/opt/ccio/store,/mnt/vol-storage\n"
+//			+ "files.locations=/opt/ccio/store,/mnt/vol-storage\n"
+			+ "files.locations=/mnt/vol-storage\n"
 			+ "http.port.private=8081\n"
 			+ "http.port.public=80\n";
 	

@@ -27,6 +27,7 @@ public class DeleteCloudflareDns  extends CliCommand {
 		boolean res = true;
 		CloudFlareService service = new CloudFlareService(cluster.getCfEmail(), cluster.getCfToken());
 		for(ImmanNode node : cluster.getImageNodes()){
+			System.out.println("Deleting DNS for "+node.getDropletName());
 			try {
 				res = res && service.deleteRecord(cluster.getCfZone(), node.getCloudFlareDnsId());
 			} catch (JSONException | UnirestException e) {

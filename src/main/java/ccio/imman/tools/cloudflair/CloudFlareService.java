@@ -99,6 +99,7 @@ public class CloudFlareService {
 		if(zoneId == null){
 			return false;
 		}
+		
 		HttpResponse<JsonNode> result = Unirest.delete(API_URL+"/zones/"+cfZone+"/purge_cache")
 				.header("X-Auth-Email", cfEmail)
 				.header("X-Auth-Key", cfToken)
